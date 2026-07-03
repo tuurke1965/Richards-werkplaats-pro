@@ -1,1 +1,1458 @@
-Upload alle bestanden naar GitHub. Zet GitHub Pages aan. Het hoofdbestand heet index.html.
+Upload alle bestanden naar GitHub. Zet <!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Richard's Werkplaats Pro</title>
+
+<style>
+:root{
+--g:#0f3d2e;
+--g2:#17664b;
+--bg:#f4f7f5;
+--mut:#65736b
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,system-ui,sans-serif;
+background:var(--bg);
+color:#15211b
+}
+
+header{
+background:linear-gradient(135deg,var(--g),#061b14);
+color:white;
+padding:14px;
+display:flex;
+gap:14px;
+align-items:center;
+position:sticky;
+top:0;
+z-index:2
+}
+
+.logo{
+width:62px;
+height:62px;
+background:white;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:38px
+}
+
+main{
+max-width:1150px;
+margin:auto;
+padding:16px
+}
+
+.hero,.card{
+background:white;
+border-radius:18px;
+padding:16px;
+box-shadow:0 4px 16px #0001;
+margin-bottom:12px
+}
+
+.hero{text-align:center}
+
+.tabs{
+display:flex;
+gap:8px;
+overflow:auto;
+margin:14px 0
+}
+
+button{
+border:0;
+border-radius:12px;
+padding:11px 14px;
+font-weight:700
+}
+
+.tab{
+background:white;
+color:var(--g);
+border:1px solid #dbe7df;
+white-space:nowrap
+}
+
+.activeTab,.primary{
+background:var(--g2)!important;
+color:white!important
+}
+
+.light{
+background:#eef5f1;
+color:var(--g)
+}
+
+.danger{
+background:#fee2e2;
+color:#991b1b
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:12px
+}
+
+.stat{
+font-size:30px;
+font-weight:800
+}
+
+.muted{
+color:var(--mut);
+font-size:13px
+}
+
+.formgrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:12px
+}
+
+input,select,textarea{
+width:100%;
+padding:12px;
+border:1px solid #cfdad3;
+border-radius:12px;
+font-size:16px
+}
+
+label{
+font-size:13px;
+font-weight:700
+}
+
+.section{display:none}
+.section.on{display:block}
+
+.order{
+border-left:8px solid #ddd
+}
+
+.In-aanname{border-left-color:#f59e0b}
+.In-reparatie{border-left-color:#2563eb}
+.Wachten-op-onderdelen{border-left-color:#f97316}
+.Klaar-om-op-te-halen{border-left-color:#16a34a}
+.Afgeleverd{border-left-color:#6b7280}
+
+.old{
+outline:3px solid #ef4444
+}
+
+.pill{
+display:inline-block;
+padding:5px 9px;
+border-radius:999px;
+font-size:12px;
+font-weight:800;
+background:#eef5f1;
+color:var(--g);
+margin:2px
+}
+
+.row{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+align-items:center;
+justify-content:space-between
+}
+
+table{
+width:100%;
+border-collapse:collapse
+}
+
+td,th{
+padding:10px;
+border-bottom:1px solid #edf2ee;
+text-align:left
+}
+
+th{background:#eef5f1}
+
+.print{display:none}
+
+@media print{
+
+body>*:not(.print){
+display:none!important
+}
+
+.print{
+display:block!important;
+padding:30px
+}
+
+.print td,.print th{
+border:1px solid #ddd
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">🚲</div>
+
+<div>
+<h1>Richard's Werkplaats Pro</h1>
+<div class="muted" style="color:#d8f3e5">
+Werkplaats • Facturen • Voorraad • Rapportages
+</div>
+</div>
+
+</header>
+
+<main>
+
+<div class="hero">
+
+<div style="font-size:70px">🚲</div>
+
+<h2>Werkplaatsdashboard</h2>
+
+<p class="muted">
+Richard's Fietsenwerkplaats
+</p>
+
+</div>
+
+<div class="tabs">
+
+<button class="tab activeTab" onclick="show('dashboard',this)">
+Dashboard
+</button>
+
+<button class="tab" onclick="show('nieuw',this)">
+Nieuwe aanname
+</button>
+
+<button class="tab" onclick="show('werkplaats',this)">
+Werkplaatsbord
+</button>
+
+<button class="tab" onclick="show('klanten',this)">
+Klanten
+</button>
+
+<button class="tab" onclick="show('voorraad',this)">
+Voorraad
+</button>
+
+<button class="tab" onclick="show('rapporten',this)">
+Rapporten
+</button>
+
+</div>
+
+
+<section id="dashboard" class="section on">
+
+<div id="stats" class="grid"></div>
+
+<div class="card">
+
+<div class="row">
+
+<h3>Zoeken</h3>
+
+<button class="primary" onclick="show('nieuw')">
++ Nieuwe fiets
+</button>
+
+</div>
+
+<input
+id="search"
+placeholder="Zoek klant, reparatienummer, merk of frame..."
+oninput="render()"
+>
+
+</div>
+
+<h3>Laatste reparaties</h3>
+
+<div id="dashOrders"></div>
+
+</section>
+
+
+<section id="nieuw" class="section">
+
+<div class="card">
+
+<h2>Nieuwe aanname</h2>
+
+<div class="formgrid">
+
+<p>
+<label>Reparatienummer</label>
+<input id="repnr" readonly>
+</p>
+
+<p>
+<label>Klant</label>
+<input id="klant">
+</p>
+
+<p>
+<label>Telefoon</label>
+<input id="tel">
+</p>
+
+<p>
+<label>E-mail</label>
+<input id="email">
+</p>
+
+<p>
+<label>Merk</label>
+<input id="merk">
+</p>
+
+<p>
+<label>Type</label>
+<input id="type">
+</p>
+
+<p>
+<label>Kleur</label>
+<input id="kleur">
+</p>
+
+<p>
+<label>Framenummer</label>
+<input id="frame">
+</p>
+
+<p>
+
+<label>Status</label>
+
+<select id="status">
+
+<option>In aanname</option>
+<option>In reparatie</option>
+<option>Wachten op onderdelen</option>
+<option>Klaar om op te halen</option>
+<option>Afgeleverd</option>
+
+</select>
+
+</p>
+
+<p>
+<label>Arbeid incl btw</label>
+<input id="arbeid" type="number" step="0.01">
+</p>
+
+<p>
+<label>Onderdelen incl btw</label>
+<input id="onderdelen" type="number" step="0.01">
+</p>
+
+<p>
+<label>Foto's</label>
+<input id="fotos" type="file" accept="image/*" multiple>
+</p>
+
+</div>
+
+<p>
+
+<label>Werkzaamheden / schade</label>
+
+<textarea id="werk" rows="4"></textarea>
+
+</p>
+
+<button class="primary" onclick="saveOrder()">
+Opslaan
+</button>
+
+</div>
+
+</section>
+
+
+<section id="werkplaats" class="section">
+
+<div class="card">
+
+<h2>Werkplaatsbord</h2>
+
+<div id="orderList"></div>
+
+</div>
+
+</section>
+
+
+<section id="klanten" class="section">
+
+<div class="card">
+
+<h2>Klanten</h2>
+
+<div id="customerList"></div>
+
+</div>
+
+</section>
+
+
+<section id="voorraad" class="section">
+
+<div class="card">
+
+<h2>Onderdelenvoorraad</h2>
+
+<div class="formgrid">
+
+<input id="partName" placeholder="Onderdeel">
+
+<input id="partQty" type="number" placeholder="Aantal">
+
+<input id="partPrice" type="number" step="0.01" placeholder="Prijs">
+
+</div>
+
+<br>
+
+<button class="primary" onclick="addPart()">
+Onderdeel toevoegen
+</button>
+
+<div id="partsList"></div>
+
+</div>
+
+</section>
+
+
+<section id="rapporten" class="section">
+
+<div class="card">
+
+<h2>Rapportages</h2>
+
+<button class="primary" onclick="printReport('dag')">
+Dagrapport
+</button>
+
+<button class="primary" onclick="printReport('week')">
+Weekrapport
+</button>
+
+<button class="primary" onclick="printReport('maand')">
+Maandrapport
+</button>
+
+<div id="reportStats"></div>
+
+</div>
+
+</section>
+
+</main>
+
+<div id="printArea" class="print"></div>
+
+
+<script>
+
+const LS='rwp_orders_v2';
+
+const PS='rwp_parts_v2';
+
+
+let orders=[];
+
+let parts=[];
+
+
+try{
+
+orders=JSON.parse(localStorage.getItem(LS)||'[]');
+
+}catch(e){
+
+orders=[];
+
+}
+
+
+try{
+
+parts=JSON.parse(localStorage.getItem(PS)||'[]');
+
+}catch(e){
+
+parts=[];
+
+}
+
+
+function el(id){
+
+return document.getElementById(id);
+
+}
+
+
+function euro(n){
+
+return '€ '+(+n||0).toFixed(2).replace('.',',');
+
+}
+
+
+function nr(){
+
+return 'RWP-'+new Date().getFullYear()+'-'+String(orders.length+1).padStart(4,'0');
+
+}
+
+
+function days(d){
+
+return Math.floor((Date.now()-new Date(d))/86400000);
+
+}
+
+
+function cls(s){
+
+return String(s||'').replaceAll(' ','-');
+
+}
+
+
+function show(id,btn){
+
+document.querySelectorAll('.section').forEach(function(x){
+
+x.classList.remove('on');
+
+});
+
+
+el(id).classList.add('on');
+
+
+document.querySelectorAll('.tab').forEach(function(x){
+
+x.classList.remove('activeTab');
+
+});
+
+
+if(btn){
+
+btn.classList.add('activeTab');
+
+}else{
+
+document.querySelectorAll('.tab').forEach(function(x){
+
+if((x.getAttribute('onclick')||'').includes("'"+id+"'")){
+
+x.classList.add('activeTab');
+
+}
+
+});
+
+}
+
+
+render();
+
+window.scrollTo(0,0);
+
+}
+
+
+function resetForm(){
+
+[
+'klant',
+'tel',
+'email',
+'merk',
+'type',
+'kleur',
+'frame',
+'arbeid',
+'onderdelen',
+'werk'
+].forEach(function(id){
+
+el(id).value='';
+
+});
+
+
+el('fotos').value='';
+
+el('repnr').value=nr();
+
+el('status').value='In aanname';
+
+}
+
+
+function saveOrder(){
+
+let klantNaam=el('klant').value.trim();
+
+
+if(!klantNaam){
+
+alert('Vul eerst de naam van de klant in.');
+
+return;
+
+}
+
+
+let o={
+
+id:Date.now(),
+
+date:new Date().toISOString(),
+
+repnr:el('repnr').value||nr(),
+
+klant:klantNaam,
+
+tel:el('tel').value,
+
+email:el('email').value,
+
+merk:el('merk').value,
+
+type:el('type').value,
+
+kleur:el('kleur').value,
+
+frame:el('frame').value,
+
+status:el('status').value,
+
+arbeid:+el('arbeid').value||0,
+
+onderdelen:+el('onderdelen').value||0,
+
+werk:el('werk').value,
+
+fotos:[]
+
+};
+
+
+let files=Array.from(el('fotos').files).slice(0,6);
+
+
+if(files.length===0){
+
+commitOrder(o);
+
+return;
+
+}
+
+
+let done=0;
+
+
+files.forEach(function(file){
+
+let reader=new FileReader();
+
+
+reader.onload=function(e){
+
+o.fotos.push(e.target.result);
+
+done++;
+
+
+if(done===files.length){
+
+commitOrder(o);
+
+}
+
+};
+
+
+reader.onerror=function(){
+
+done++;
+
+
+if(done===files.length){
+
+commitOrder(o);
+
+}
+
+};
+
+
+reader.readAsDataURL(file);
+
+});
+
+}
+
+
+function commitOrder(o){
+
+orders.push(o);
+
+
+try{
+
+localStorage.setItem(LS,JSON.stringify(orders));
+
+}catch(e){
+
+alert('Opslaan lukt niet. Probeer zonder foto of met minder foto’s.');
+
+orders=orders.filter(function(x){
+
+return x.id!==o.id;
+
+});
+
+return;
+
+}
+
+
+el('search').value='';
+
+
+resetForm();
+
+
+render();
+
+
+show('dashboard');
+
+
+alert('Klant en reparatie zijn opgeslagen.');
+
+}
+
+
+function card(o){
+
+let oud=days(o.date)>7 && o.status!=='Afgeleverd';
+
+
+let imgs=(o.fotos||[]).map(function(i){
+
+return '<img src="'+i+'" style="width:70px;height:70px;object-fit:cover;border-radius:10px;margin:3px">';
+
+}).join('');
+
+
+return `
+
+<div class="card order ${cls(o.status)} ${oud?'old':''}">
+
+<div class="row">
+
+<div>
+
+<b>${o.klant||'Onbekend'}</b>
+
+<span class="pill">${o.repnr}</span>
+
+${oud?'<span class="pill" style="background:#fee2e2;color:#991b1b">staat lang</span>':''}
+
+<br>
+
+<span class="muted">
+
+${o.merk||''} ${o.type||''} • ${o.kleur||''} • Frame ${o.frame||'-'}
+
+</span>
+
+</div>
+
+<b>${euro(o.arbeid+o.onderdelen)}</b>
+
+</div>
+
+<p>${o.werk||''}</p>
+
+<div>${imgs}</div>
+
+<div class="row">
+
+<select onchange="changeStatus(${o.id},this.value)">
+
+<option ${o.status==='In aanname'?'selected':''}>In aanname</option>
+
+<option ${o.status==='In reparatie'?'selected':''}>In reparatie</option>
+
+<option ${o.status==='Wachten op onderdelen'?'selected':''}>Wachten op onderdelen</option>
+
+<option ${o.status==='Klaar om op te halen'?'selected':''}>Klaar om op te halen</option>
+
+<option ${o.status==='Afgeleverd'?'selected':''}>Afgeleverd</option>
+
+</select>
+
+<span>
+
+<button class="light" onclick="work(${o.id})">
+Werkbon
+</button>
+
+<button class="primary" onclick="invoice(${o.id})">
+Factuur
+</button>
+
+<button class="danger" onclick="delOrder(${o.id})">
+X
+</button>
+
+</span>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function render(){
+
+let q=(el('search').value||'').toLowerCase();
+
+
+let list=orders.filter(function(o){
+
+return JSON.stringify(o).toLowerCase().includes(q);
+
+}).sort(function(a,b){
+
+return new Date(b.date)-new Date(a.date);
+
+});
+
+
+let today=new Date().toDateString();
+
+
+let omzet=orders.filter(function(o){
+
+return new Date(o.date).toDateString()===today;
+
+}).reduce(function(a,o){
+
+return a+o.arbeid+o.onderdelen;
+
+},0);
+
+
+el('stats').innerHTML=`
+
+<div class="card">
+
+<div class="muted">Actief</div>
+
+<div class="stat">
+
+${orders.filter(function(o){
+
+return o.status!=='Afgeleverd';
+
+}).length}
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="muted">Klaar</div>
+
+<div class="stat">
+
+${orders.filter(function(o){
+
+return o.status==='Klaar om op te halen';
+
+}).length}
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="muted">Wachten</div>
+
+<div class="stat">
+
+${orders.filter(function(o){
+
+return o.status==='Wachten op onderdelen';
+
+}).length}
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="muted">Langer dan 7 dagen</div>
+
+<div class="stat">
+
+${orders.filter(function(o){
+
+return o.status!=='Afgeleverd' && days(o.date)>7;
+
+}).length}
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="muted">Omzet vandaag</div>
+
+<div class="stat">${euro(omzet)}</div>
+
+</div>
+
+`;
+
+
+el('dashOrders').innerHTML=
+
+list.slice(0,5).map(card).join('')
+
+||
+
+'<div class="card"><p class="muted">Nog geen reparaties.</p></div>';
+
+
+el('orderList').innerHTML=
+
+list.map(card).join('')
+
+||
+
+'<p class="muted">Nog geen reparaties.</p>';
+
+
+let klanten=Array.from(
+
+new Set(
+
+orders.map(function(o){
+
+return o.klant;
+
+}).filter(Boolean)
+
+)
+
+);
+
+
+el('customerList').innerHTML=
+
+klanten.map(function(n){
+
+let aantal=orders.filter(function(o){
+
+return o.klant===n;
+
+}).length;
+
+
+return `
+
+<div class="card">
+
+<b>${n}</b>
+
+<br>
+
+<span class="muted">${aantal} reparaties</span>
+
+</div>
+
+`;
+
+}).join('')
+
+||
+
+'<p class="muted">Nog geen klanten.</p>';
+
+
+el('partsList').innerHTML=
+
+'<table>'+
+
+'<tr><th>Onderdeel</th><th>Aantal</th><th>Prijs</th><th></th></tr>'+
+
+parts.map(function(p){
+
+return `
+
+<tr>
+
+<td>
+
+${p.name}
+
+${p.qty<5?'<span class="pill" style="background:#fee2e2;color:#991b1b">laag</span>':''}
+
+</td>
+
+<td>${p.qty}</td>
+
+<td>${euro(p.price)}</td>
+
+<td>
+
+<button class="light" onclick="usePart(${p.id})">
+Gebruik
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+}).join('')
+
++'</table>';
+
+
+el('reportStats').innerHTML=report('maand');
+
+}
+
+
+function changeStatus(id,s){
+
+let o=orders.find(function(x){
+
+return x.id===id;
+
+});
+
+
+if(o){
+
+o.status=s;
+
+localStorage.setItem(LS,JSON.stringify(orders));
+
+render();
+
+}
+
+}
+
+
+function delOrder(id){
+
+if(confirm('Reparatie verwijderen?')){
+
+orders=orders.filter(function(o){
+
+return o.id!==id;
+
+});
+
+
+localStorage.setItem(LS,JSON.stringify(orders));
+
+render();
+
+}
+
+}
+
+
+function addPart(){
+
+let naam=el('partName').value.trim();
+
+
+if(!naam){
+
+alert('Vul een onderdeel in.');
+
+return;
+
+}
+
+
+parts.push({
+
+id:Date.now(),
+
+name:naam,
+
+qty:+el('partQty').value||0,
+
+price:+el('partPrice').value||0
+
+});
+
+
+localStorage.setItem(PS,JSON.stringify(parts));
+
+
+el('partName').value='';
+
+el('partQty').value='';
+
+el('partPrice').value='';
+
+
+render();
+
+}
+
+
+function usePart(id){
+
+let p=parts.find(function(x){
+
+return x.id===id;
+
+});
+
+
+if(p && p.qty>0){
+
+p.qty--;
+
+}
+
+
+localStorage.setItem(PS,JSON.stringify(parts));
+
+render();
+
+}
+
+
+function filt(t){
+
+let n=new Date();
+
+
+return orders.filter(function(o){
+
+let d=new Date(o.date);
+
+
+if(t==='dag'){
+
+return d.toDateString()===n.toDateString();
+
+}
+
+
+if(t==='week'){
+
+return (n-d)/86400000<7;
+
+}
+
+
+if(t==='maand'){
+
+return d.getMonth()===n.getMonth()
+
+&&
+
+d.getFullYear()===n.getFullYear();
+
+}
+
+
+return false;
+
+});
+
+}
+
+
+function report(t){
+
+let a=filt(t);
+
+
+let ar=a.reduce(function(x,o){
+
+return x+o.arbeid;
+
+},0);
+
+
+let on=a.reduce(function(x,o){
+
+return x+o.onderdelen;
+
+},0);
+
+
+return `
+
+<h3>${t}rapport</h3>
+
+<table>
+
+<tr>
+
+<th>Omschrijving</th>
+
+<th>Bedrag</th>
+
+</tr>
+
+<tr>
+
+<td>Arbeid</td>
+
+<td>${euro(ar)}</td>
+
+</tr>
+
+<tr>
+
+<td>Onderdelen</td>
+
+<td>${euro(on)}</td>
+
+</tr>
+
+<tr>
+
+<td><b>Totaal</b></td>
+
+<td><b>${euro(ar+on)}</b></td>
+
+</tr>
+
+<tr>
+
+<td>Aantal</td>
+
+<td>${a.length}</td>
+
+</tr>
+
+</table>
+
+`;
+
+}
+
+
+function printReport(t){
+
+el('printArea').innerHTML=
+
+'<h1>🚲 Richard&apos;s Fietsenwerkplaats</h1>'
+
++
+
+report(t);
+
+
+window.print();
+
+}
+
+
+function work(id){
+
+let o=orders.find(function(x){
+
+return x.id===id;
+
+});
+
+
+el('printArea').innerHTML=`
+
+<h1>🚲 Werkbon ${o.repnr}</h1>
+
+<p>
+
+<b>Klant:</b> ${o.klant}
+
+<br>
+
+<b>Fiets:</b> ${o.merk} ${o.type}
+
+<br>
+
+<b>Status:</b> ${o.status}
+
+</p>
+
+<p>
+
+<b>Werk:</b>
+
+<br>
+
+${o.werk||''}
+
+</p>
+
+<p>
+
+Reparatiecode: ${o.repnr}
+
+</p>
+
+`;
+
+
+window.print();
+
+}
+
+
+function invoice(id){
+
+let o=orders.find(function(x){
+
+return x.id===id;
+
+});
+
+
+el('printArea').innerHTML=`
+
+<h1>🚲 Factuur ${o.repnr}</h1>
+
+<p>
+
+Richard's Fietsenwerkplaats
+
+<br>
+
+Charloisse Lagedijk 918
+
+<br>
+
+3088 LA Rotterdam
+
+<br>
+
+Tel: 010 842 0868
+
+</p>
+
+<p>
+
+<b>Klant:</b>
+
+<br>
+
+${o.klant}
+
+<br>
+
+${o.email||''}
+
+</p>
+
+<table>
+
+<tr>
+
+<th>Omschrijving</th>
+
+<th>Bedrag</th>
+
+</tr>
+
+<tr>
+
+<td>Arbeid</td>
+
+<td>${euro(o.arbeid)}</td>
+
+</tr>
+
+<tr>
+
+<td>Onderdelen</td>
+
+<td>${euro(o.onderdelen)}</td>
+
+</tr>
+
+<tr>
+
+<td><b>Totaal incl. btw</b></td>
+
+<td><b>${euro(o.arbeid+o.onderdelen)}</b></td>
+
+</tr>
+
+</table>
+
+`;
+
+
+window.print();
+
+}
+
+
+resetForm();
+
+render();
+
+</script>
+
+</body>
+</html Pages aan. Het hoofdbestand heet index.html.
